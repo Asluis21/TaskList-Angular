@@ -1,0 +1,30 @@
+:host {
+    --border:#7D9D9C;
+    --border-link:#789395;
+    --principal:#E5E3C9;
+    --red:#B33030;
+    --dark-blue:#19282F;
+    --muted:rgba(33, 37, 41, 0.75);
+    --shadown: rgba(0, 0, 0, .175);
+    --border-light: #dee2e6;
+}
+
+.form-control{
+    border-radius: 0;
+}
+
+.form-label{
+    color: var(--muted);
+}
+
+.btn-enviar{
+    color: var(--border-link);
+    background-color: white;
+    border: 1px solid var(--border-link);
+}
+
+.btn-enviar:hover{
+    color: white;
+    background-color: var(--border-link);
+    transition: .3s all ease;
+}

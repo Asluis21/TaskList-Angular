@@ -1,0 +1,26 @@
+
+/* MEDIA QUERIES */
+
+/* Dispositivo xs */
+@media screen and (max-width: 320px) {
+    
+}
+
+/* Small */
+@media screen and (max-width:576px) {
+}
+
+/* Medium */
+@media screen and (max-width:768px) {
+}
+
+/* Large */
+@media screen and (max-width:992px) {
+
+    
+}
+
+/* Extra Large */
+@media screen and (max-width:1200px) {
+    
+}

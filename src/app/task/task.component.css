@@ -1,0 +1,99 @@
+:host {
+    --border:#7D9D9C;
+    --border-link:#789395;
+    --principal:#E5E3C9;
+    --red:#B33030;
+    --dark-blue:#19282F;
+    --muted:rgba(33, 37, 41, 0.75);
+}
+ 
+h1, h2, h3, h4, h5, h6{
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+}
+
+/* List task */
+.list-tasks{
+    border-radius: 0;
+}
+
+/* List header */
+.list-tasks-header{
+    border-top: 2px solid var(--border);
+}
+
+.more-options{
+    border-radius: 0;
+}
+
+.delete-option{
+    background-color: var(--red);
+    color: white;
+}
+
+
+/* List body */
+.list-tasks-body, .list-tasks-header{
+    padding: 20px 20px;
+}
+
+.list-tasks-body a {
+    border-radius: 20px;
+    border: 1px solid var(--border-link);
+    font-size: 10px;
+    padding: 10px;
+    color: #789395;
+}
+
+.list-tasks-body a:hover {
+    background: var(--border-link);
+    color: var(--principal);
+    transition: .3s all ease;
+}
+
+/* pagination */
+
+.pagination .page-link {
+    color: var(--muted);
+}
+
+.pagination .page-item .active{
+    background: var(--border-link);
+    border: var(--border-link);
+}
+
+/* MEDIA QUERIES */
+
+/* Dispositivo xs */
+@media screen and (max-width: 320px) {
+    
+}
+
+/* Small */
+@media screen and (max-width:576px) {
+    .page-item{
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Medium */
+@media screen and (max-width:768px) {
+}
+
+/* Large */
+@media screen and (max-width:992px) {
+    
+}
+
+/* Extra Large */
+@media screen and (max-width:1200px) {
+    
+}
