@@ -1,35 +1,47 @@
-<div class="container">
-    <form #taskFomr="ngForm" (ngSubmit)="onTaskSubmit()">
-        <div class="row mx-2 my-4">
-            <label class="col-12 form-label" for="name">Task Name</label>
-
-            <div class="col-12 col-lg-6">
-                <input class="form-control" type="text" name="name" id="name" [(ngModel)]="task.name">
-                <small *ngIf="errors.has('name')" style="color: red;">{{errors.get('name')}}</small>
-            </div>
+<div class="all-view d-flex flex-column h-100">
+    <app-search-bar></app-search-bar>
+    
+    <div class="row main-window-task flex-grow-1 w-100 m-0 flex-wrap align-content-start flex-lg-nowrap">
+        <div class="col-12 col-lg-2 p-0 main-window-task-menu">
+            <app-navigation-menu ></app-navigation-menu>
         </div>
     
-        <div class="row mx-2 my-4">
-            <label class="col-12 form-label" for="description">Description</label>
-    
-            <div class="col-12 col-lg-6">
-                <input class="form-control" type="text" name="description" id="description" [(ngModel)]="task.description">
-                <small *ngIf="errors.has('description')" style="color: red;">{{errors.get('description')}}</small>
-            </div>
-        </div>    
-    
-        <div class="row mx-2 my-4">
-            <label class="col-12 form-label" for="dueDate">Due Date</label>
-    
-            <div class="col-12 col-lg-6">
-                <input class="form-control" type="datetime-local" name="dueDate" id="dueDate" [(ngModel)]="task.dueDate">
-                <!--  <input type="datetime-local"  class="form-control" name="date" id="datetimeFilter" [(ngModel)]="selectedDate"> -->
-                <small *ngIf="errors.has('dueDate')" style="color: red;">{{errors.get('dueDate')}}</small>
+        <div class="col-12 col-lg-10">
+            <div class="container">
+                <form #taskFomr="ngForm" (ngSubmit)="onTaskSubmit()">
+                    <div class="row mx-2 my-4">
+                        <label class="col-12 form-label" for="name">Task Name</label>
+            
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control" type="text" name="name" id="name" [(ngModel)]="task.name">
+                            <small *ngIf="errors.has('name')" style="color: red;">{{errors.get('name')}}</small>
+                        </div>
+                    </div>
+                
+                    <div class="row mx-2 my-4">
+                        <label class="col-12 form-label" for="description">Description</label>
+                
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control" type="text" name="description" id="description" [(ngModel)]="task.description">
+                            <small *ngIf="errors.has('description')" style="color: red;">{{errors.get('description')}}</small>
+                        </div>
+                    </div>    
+                
+                    <div class="row mx-2 my-4">
+                        <label class="col-12 form-label" for="dueDate">Due Date</label>
+                
+                        <div class="col-12 col-lg-6">
+                            <input class="form-control" type="datetime-local" name="dueDate" id="dueDate" [(ngModel)]="task.dueDate">
+                            <small *ngIf="errors.has('dueDate')" style="color: red;">{{errors.get('dueDate')}}</small>
+                        </div>
+                    </div>
+                
+                    <div class="m-4 row">
+                        <input class="col-12 col-sm-3 btn-enviar" type="submit" value="Enviar">
+                    </div>
+                </form>
             </div>
         </div>
-    
-        <div class="m-4 row">
-            <input class="col-12 col-sm-3 btn-enviar" type="submit" value="Enviar">
-        </div>
-    </form>
+    </div>
 </div>
+

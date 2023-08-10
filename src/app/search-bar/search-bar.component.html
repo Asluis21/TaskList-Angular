@@ -1,29 +1,24 @@
 <nav class="row w-100 m-0">
-
-    <div class="col-12 col-sm-2 p-0">
+    <div class="col-12 col-sm p-0">
         <div class="navbar-logo d-flex d-sm-block justify-content-between align-items-center">
             <a href="#" class="navbar-logo-title">tasks</a>
             
-            <a class="button-show-search d-block d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#show-search" arial-controls="show-search" aria-expanded="false" aria-label="Button show search">
+            <a class="button-show-search d-block d-sm-none" type="button" data-bs-toggle="collapse" data-bs-target="#show-search" arial-controls="show-search" aria-expanded="false" aria-label="Button show search" *ngIf="editModeExist">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                 </svg>
             </a>
         </div>
-   
     </div>
 
-
-    <div class="col-12 col-sm-10 navbar-search navbar-expand-sm">
-    
-        <div class="collapse navbar-collapse navbar-search-item" id="show-search">
-            <input type="text" name="seach" id="search" class="search form-control h-100 text-muted">
+    <div class="col-12 col-md-10 navbar-search navbar-expand-sm" *ngIf="editModeExist">
+        <div class="collapse navbar-collapse navbar-search-item" id="show-search" >
+            <input type="text" name="search" id="search" class="search form-control h-100 text-muted">
     
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search d-none d-sm-block" viewBox="0 0 16 16">
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
             </svg>            
         </div>
-        
     </div>
 </nav>
 
