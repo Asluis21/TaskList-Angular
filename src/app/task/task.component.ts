@@ -6,6 +6,7 @@ import { Observable, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Pagination } from '../utils/pagination';
 import flatpickr from 'flatpickr';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -120,6 +121,9 @@ export class TaskComponent implements OnInit {
     const selectedTaskIds: number[] = [];
     const checkboxes = this.taskList.nativeElement.querySelectorAll('input[type="checkbox"]');
 
+    
+
+
     checkboxes.forEach((checkbox: HTMLInputElement)=>{
       if (checkbox.checked){
         const taskId =+ checkbox.id.replace('task', '');
@@ -127,20 +131,61 @@ export class TaskComponent implements OnInit {
       }
     })
     
-    console.log(selectedTaskIds);
-
     if(selectedTaskIds.length >0){
       this.taskService.deleteTasksById(selectedTaskIds).subscribe({
         next: () => {
-  
           this.tasks = this.tasks.filter((task) => !selectedTaskIds.includes(task.id))
+
         },
   
         error:(err) =>{
           console.log(err);
         }
       })
+
+      const swalWithBootstrapButtons = Swal.mixin({
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Are you sure to delete?',
+        text: "You won't be able to revert this!",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete them!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+  
+          
+          swalWithBootstrapButtons.fire(
+            'Deleted!',
+            'Tasks have been deleted.',
+            'success'
+          )
+        }
+      })
+
+
+    } else {
+
+      const swalWithBootstrapButtons = Swal.mixin({
+        buttonsStyling: false
+      })
+
+      swalWithBootstrapButtons.fire({
+        // title: 'Are you sure to delete?',
+        title: "There are not tasks to delete",
+        icon: 'warning',
+      })
+
+
     }
+
+
+
+
 
   }
 }

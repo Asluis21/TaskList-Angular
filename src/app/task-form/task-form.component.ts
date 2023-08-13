@@ -6,6 +6,7 @@ import { parse, format } from 'date-fns';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import flatpickr from 'flatpickr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-task-form',
@@ -62,14 +63,22 @@ export class TaskFormComponent implements OnInit {
 
     console.log(this.task.dueDate);
 
+    const swalWithBootstrapButtons = Swal.mixin({
+      buttonsStyling: false
+    })
+
     if(this.id != 0){
 
       this.taskService.editTask(this.id, this.task).subscribe({
         
-        next: (task) => {
-          console.log(task)
-          console.log("Modificado Correctamente");
+        next: () => {
           this.errors = new Map<string, string>
+
+          swalWithBootstrapButtons.fire({
+            title: `Task '${this.task.name}' modified successfully`,
+            icon: 'success'
+          })
+
         },
         error:(err) =>{
           this.errors = new Map(Object.entries(err));
@@ -80,9 +89,13 @@ export class TaskFormComponent implements OnInit {
       
       this.taskService.createTask(this.task).subscribe({
         next: ()=>{
-          console.log("Creado Correctamente");
           this.errors = new Map<string, string>
           this.router.navigate(['/task'])
+          
+          swalWithBootstrapButtons.fire({
+            title: `Task '${this.task.name}' created successfully`,
+            icon: 'success'
+          })
         },
 
         error: (err) =>{
