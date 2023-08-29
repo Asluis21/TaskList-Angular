@@ -23,10 +23,10 @@ export class TaskService {
     );
   }
 
-  listTasksPageable(page:number):Observable<TaskResponse>{
-    let params = new HttpParams()
-      .set('page', page.toString());
-    
+  listTasksPageable(page:number, keyword:string):Observable<TaskResponse>{
+    let params = new HttpParams().set('page', page.toString());
+    params = params.set('keyword', keyword);
+
     return this.http.get<TasksJson>(this.url + '/tasksPageable', {params}).pipe(
       map(res => res.tasks)
     );

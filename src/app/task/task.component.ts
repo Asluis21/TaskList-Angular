@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Pagination } from '../utils/pagination';
 import flatpickr from 'flatpickr';
 import Swal from 'sweetalert2';
+import { DataSharingService } from './data-sharing.service';
 
 
 @Component({
@@ -28,9 +29,9 @@ export class TaskComponent implements OnInit {
   
   public selectedState: string;
   public tasksPerPage: number;
+  inputValue: string = '';
 
-
-  constructor(private taskService: TaskService, private pagination: Pagination, private router : ActivatedRoute){ }
+  constructor(private taskService: TaskService, private pagination: Pagination, private router : ActivatedRoute, private dataSharingService:DataSharingService){ }
   
   @ViewChild('taskList', {static:true}) taskList!: ElementRef<HTMLUListElement>;
 
@@ -48,6 +49,17 @@ export class TaskComponent implements OnInit {
       
       // Date and Time
       console.log(this.selectedDate);
+    
+      this.dataSharingService.inputValue$.subscribe(value => {
+        this.inputValue = value;
+        this.loadPageData();
+        console.log("valor cambiado: " + value);
+
+        // this.tasks = this.tasks.filter(task => {
+        //   task.name.includes(value);
+        // })  
+        
+      })
   }
 
   ngAfterViewInit(){
@@ -84,7 +96,7 @@ export class TaskComponent implements OnInit {
           break;
 
         default:
-          tasksFound = this.taskService.listTasksPageable(this.currentPage);
+          tasksFound = this.taskService.listTasksPageable(this.currentPage, this.inputValue);
           break;
       }
 
@@ -94,10 +106,12 @@ export class TaskComponent implements OnInit {
           console.log(tasks);
           
           this.tasks = this.pagination.updatePageData(tasks)
+        
           this.pagesRanges = this.pagination.pagesRanges;
         },
 
         error: (err) => {
+          console.log(err.error.message);
           console.log(err);
         }
       });
