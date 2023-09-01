@@ -26,10 +26,11 @@ export class TaskComponent implements OnInit {
   public pagesRanges: number[] = [];
   public selectedDate:string;
   public state : string;
-  
+
   public selectedState: string;
   public tasksPerPage: number;
   inputValue: string = '';
+  errorMessage: string = '';
 
   constructor(private taskService: TaskService, private pagination: Pagination, private router : ActivatedRoute, private dataSharingService:DataSharingService){ }
   
@@ -42,9 +43,7 @@ export class TaskComponent implements OnInit {
     this.router.paramMap.subscribe(
       (params) => {
         this.currentPage = parseInt(params.get('page')) || 0;
-        this.loadPageData();
-
-        console.log(this.tasks);
+        console.log(this.tasks.length == 0);
       });
       
       // Date and Time
@@ -111,8 +110,8 @@ export class TaskComponent implements OnInit {
         },
 
         error: (err) => {
-          console.log(err.error.message);
           console.log(err);
+          this.errorMessage = err
         }
       });
   } 

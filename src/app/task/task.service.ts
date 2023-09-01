@@ -46,8 +46,11 @@ export class TaskService {
     let params = new HttpParams().set('page', page);
     params = params.set('date', date);
 
-    return this.http.get<TasksJson>(this.url + '/pendingTasksPageable', {params}).pipe(
-      map((res) => res.tasks)
+    return this.http.get(this.url + '/pendingTasksPageable', {params}).pipe(
+      map((res:any) => res.tasks),
+      catchError((error) => {
+        return throwError(() => error.error.message);
+      })
     );
   }
 
