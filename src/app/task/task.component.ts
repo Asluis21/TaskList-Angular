@@ -133,7 +133,7 @@ export class TaskComponent implements OnInit {
   deleteSelectedTasks(){
     const selectedTaskIds: number[] = [];
     const checkboxes = this.taskList.nativeElement.querySelectorAll('input[type="checkbox"]');
-
+    
     
 
 
@@ -145,16 +145,6 @@ export class TaskComponent implements OnInit {
     })
     
     if(selectedTaskIds.length >0){
-      this.taskService.deleteTasksById(selectedTaskIds).subscribe({
-        next: () => {
-          this.tasks = this.tasks.filter((task) => !selectedTaskIds.includes(task.id))
-
-        },
-  
-        error:(err) =>{
-          console.log(err);
-        }
-      })
 
       const swalWithBootstrapButtons = Swal.mixin({
         buttonsStyling: false
@@ -170,7 +160,17 @@ export class TaskComponent implements OnInit {
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
-  
+          
+          this.taskService.deleteTasksById(selectedTaskIds).subscribe({
+            next: () => {
+              this.tasks = this.tasks.filter((task) => !selectedTaskIds.includes(task.id))
+    
+            },
+      
+            error:(err) =>{
+              console.log(err);
+            }
+          })
           
           swalWithBootstrapButtons.fire(
             'Deleted!',

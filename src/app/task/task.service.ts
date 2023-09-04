@@ -7,6 +7,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { TaskResponse } from './task-response';
 import { TasksJson } from './tasks-json';
 import { catchError } from 'rxjs/operators';
+import { Priority } from './priority';
 
 @Injectable({
   providedIn: 'root'
@@ -106,11 +107,7 @@ export class TaskService {
         console.log(res.message);
         return res.tasks as Task
       }),
-      catchError(
-        (err) =>{
-          return throwError(() => err.message);
-        }
-      )
+      catchError((err) => throwError(() => err.message))
     );
   }
 
@@ -123,5 +120,11 @@ export class TaskService {
     );
   }
 
-
+  // PRIORITY
+  findAllPriorities():Observable<Priority[]>{
+    return this.http.get(this.url+'/priority').pipe(
+      map((res:any) => res.priorities),
+      catchError((err) => throwError(() => err.message))
+    )
+  }
 } 

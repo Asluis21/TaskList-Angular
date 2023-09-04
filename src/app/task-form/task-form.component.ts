@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import flatpickr from 'flatpickr';
 import Swal from 'sweetalert2';
+import { Priority } from '../task/priority';
 
 @Component({
   selector: 'app-task-form',
@@ -16,6 +17,7 @@ import Swal from 'sweetalert2';
 export class TaskFormComponent implements OnInit {
 
   public editMode: boolean;
+  public priorities: Priority[] = [];
   private id: number=0;
   public task: Task = new Task();
   public errors: Map<string, string> = new Map<string, string>();
@@ -33,6 +35,8 @@ export class TaskFormComponent implements OnInit {
   ngOnInit():void{
     this.editMode = this.routerActive.snapshot.data['editMode'];
     
+    this.taskService.findAllPriorities().subscribe((res) => this.priorities = res);
+
     this.routerActive.paramMap.subscribe(
       (param) => this.id = parseInt(param.get('id')) || 0 as number
     )
@@ -50,9 +54,10 @@ export class TaskFormComponent implements OnInit {
   FillFields():void{
     this.taskService.findTaskById(this.id).subscribe(
       (taskFound) => {
-        this.task.name = taskFound.name;
-        this.task.description = taskFound.description;
-        this.task.dueDate = taskFound.dueDate;
+        taskFound.priority = null;
+        this.task = taskFound;
+        console.log(this.task);
+        
       }
     );
   }
@@ -70,9 +75,11 @@ export class TaskFormComponent implements OnInit {
     if(this.id != 0){
 
       this.taskService.editTask(this.id, this.task).subscribe({
-        
+
         next: () => {
           this.errors = new Map<string, string>
+          console.log(this.task);
+          
 
           swalWithBootstrapButtons.fire({
             title: `Task '${this.task.name}' modified successfully`,

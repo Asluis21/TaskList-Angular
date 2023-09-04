@@ -26,7 +26,20 @@
                             <small *ngIf="errors.has('description')" style="color: red;">{{errors.get('description')}}</small>
                         </div>
                     </div>    
-                
+
+
+                    <div class="row mx-2 my-4">
+                        <div class="col-12">
+                            <div class="d-flex gap-5">
+                                <div class="form-check" *ngFor="let priority of priorities">
+                                    <label class="form-label form-check-label" [for]="'priority-'+priority.id">{{priority.name}}</label>
+                                    <input class="form-check-input" type="radio" [name]="'priority'" [id]="'priority-'+priority.id" [(ngModel)]="task.priorityId" [value]="priority.id">
+                                </div>
+                            </div>
+                            <small *ngIf="errors.has('priorityId')" style="color: red;">{{errors.get('priorityId')}}</small>
+                        </div>
+                    </div>
+
                     <div class="row mx-2 my-4">
                         <label class="col-12 form-label" for="dueDate">Due Date</label>
                 
