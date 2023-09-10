@@ -1,22 +1,21 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit} from '@angular/core';
 import { Task } from './task';
 import { TaskService } from './task.service';
 import { TaskResponse } from './task-response';
-import { Observable, tap } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { Pagination } from '../utils/pagination';
 import flatpickr from 'flatpickr';
 import Swal from 'sweetalert2';
 import { DataSharingService } from './data-sharing.service';
-
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css']
 })
-export class TaskComponent implements OnInit {
-  private readonly STATE_TASK = 'task';
+export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly STATE_OVERDUE = 'overdue';
   private readonly STATE_PENDING = 'pending';
   private readonly STATE_COMPLETE = 'complete';
@@ -26,51 +25,109 @@ export class TaskComponent implements OnInit {
   public pagesRanges: number[] = [];
   public selectedDate:string;
   public state : string;
+  private subscriptions: Subscription[] = [];
 
   public selectedState: string;
   public tasksPerPage: number;
-  inputValue: string = '';
+  inputValue: string;
   errorMessage: string = '';
+  tittle = 'All tasks'
+  firstLoad = true;
+  private flatpickrInstance: flatpickr.Instance;
 
-  constructor(private taskService: TaskService, private pagination: Pagination, private router : ActivatedRoute, private dataSharingService:DataSharingService){ }
+  constructor(private taskService: TaskService, private pagination: Pagination, private route : ActivatedRoute, private dataSharingService:DataSharingService){ }
   
   @ViewChild('taskList', {static:true}) taskList!: ElementRef<HTMLUListElement>;
 
   ngOnInit(): void {
-    this.state = this.router.snapshot.data['state'];
+    this.initFlatpickr();
     this.selectedDate = Task.getFormatDateTime(new Date());
     
-    this.router.paramMap.subscribe(
-      (params) => {
-        this.currentPage = parseInt(params.get('page')) || 0;
-        console.log(this.tasks.length == 0);
-      });
-      
-      // Date and Time
-      console.log(this.selectedDate);
-    
-      this.dataSharingService.inputValue$.subscribe(value => {
-        this.inputValue = value;
-        this.loadPageData();
-        console.log("valor cambiado: " + value);
+    this.subscriptions.push(
+      this.route.paramMap.subscribe((params) => {
+        if (!this.firstLoad) {
+          console.log("TIPO DE CARGAR: loadPageData por parametro page");
+          this.state = this.route.snapshot.data['state'];
+          this.currentPage = parseInt(params.get('page')) || 0
+          this.loadPageData();
+          this.tittle = 'Tasks ' + this.state.charAt(0).toUpperCase() + this.state.slice(1);
 
-        // this.tasks = this.tasks.filter(task => {
-        //   task.name.includes(value);
-        // })  
-        
+        }
       })
+    );
+
+    // this.route.paramMap.subscribe((params) => {
+    //     if(! this.firstLoad){
+    //       console.log("TIPO DE CARGAR: loadPageData por parametro page");
+    //       this.state = this.route.snapshot.data['state'];
+    //       this.currentPage = parseInt(params.get('page')) || 0
+    //       this.loadPageData();
+    //     }
+    //   });
+
+    this.firstLoad = false;
+    
+    // if(!this.firstLoad){
+    //   this.dataSharingService.inputValue$.subscribe(value => {
+    //     console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra");
+    //       this.inputValue = value;
+    //       console.log('this.inputValue: ' + this.inputValue);
+
+          
+    //       this.state = this.route.snapshot.data['state'];
+    //       this.currentPage = 0
+          
+    //       this.loadPageData();
+    //   })
+    // }
+
+    this.subscriptions.push(
+      this.dataSharingService.inputValue$
+        .pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe((value) => {
+          console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra");
+          this.inputValue = value;
+          console.log('this.inputValue: ' + this.inputValue);
+
+          
+          this.state = this.route.snapshot.data['state'];
+          this.currentPage = 0
+          this.tittle = 'Tasks ' + this.state.charAt(0).toUpperCase() + this.state.slice(1);
+          
+          this.loadPageData();
+        })
+    );
+
+    console.log('ROUTER SNAPSHOT:' + this.state);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyFlatpickr();
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  private initFlatpickr(): void {
+    const datetimeFilter = document.getElementById('datetimeFilter') as HTMLInputElement;
+
+    if (datetimeFilter) {
+      this.flatpickrInstance = flatpickr(datetimeFilter, {
+        enableTime: true,
+        dateFormat: 'Y-m-d H:i'
+      });
+    }
+  }
+
+  private destroyFlatpickr(): void {
+    if (this.flatpickrInstance) {
+      this.flatpickrInstance.destroy();
+    }
   }
 
   ngAfterViewInit(){
-    flatpickr('#datetimeFilter',{
-      enableTime:true,
-      dateFormat: 'Y-m-d H:i'
-    })
-  };
+    
+  }
 
-
-
-  onSubmit() : void{
+  filterByDate() : void{
     this.currentPage = 0;
     this.selectedDate = Task.getFormatDateTime(new Date(this.selectedDate));
     this.loadPageData();
@@ -79,7 +136,7 @@ export class TaskComponent implements OnInit {
   private loadPageData(): void {
         
       let tasksFound : Observable<TaskResponse>;
-      console.log(this.state);
+      console.log('STATE: ' + this.state);
       
       switch (this.state) {
         case this.STATE_OVERDUE:
@@ -101,11 +158,9 @@ export class TaskComponent implements OnInit {
 
       tasksFound.subscribe({
         next: (tasks) => {
-          console.log(this.state);
           console.log(tasks);
           
-          this.tasks = this.pagination.updatePageData(tasks)
-        
+          this.tasks = this.pagination.updatePageData(tasks);
           this.pagesRanges = this.pagination.pagesRanges;
         },
 
@@ -114,28 +169,28 @@ export class TaskComponent implements OnInit {
           this.errorMessage = err
         }
       });
-  } 
+  }
 
-  public deleteTask(id:number){
-    this.taskService.deleteTaskById(id).subscribe({
-      next:()=>{
-        console.log("task " + id + " deleted");
-        this.tasks = this.tasks.filter((task) => task.id != id);
-      },
+  getPriorityColor(idPriority : number):string{
+    
+    switch(idPriority){
+      case 1:
+        return 'var(--red)'
+      
+      case 2:
+        return 'var(--yellow)'
 
-      error:(err)=>{
-        console.log(err);
-        
-      }
-    })
+      case 3:
+        return 'var(--green)'
+      
+      default:
+        return 'var(--muted)'
+    }
   }
 
   deleteSelectedTasks(){
     const selectedTaskIds: number[] = [];
     const checkboxes = this.taskList.nativeElement.querySelectorAll('input[type="checkbox"]');
-    
-    
-
 
     checkboxes.forEach((checkbox: HTMLInputElement)=>{
       if (checkbox.checked){
@@ -162,14 +217,8 @@ export class TaskComponent implements OnInit {
         if (result.isConfirmed) {
           
           this.taskService.deleteTasksById(selectedTaskIds).subscribe({
-            next: () => {
-              this.tasks = this.tasks.filter((task) => !selectedTaskIds.includes(task.id))
-    
-            },
-      
-            error:(err) =>{
-              console.log(err);
-            }
+            next: () => this.tasks = this.tasks.filter((task) => !selectedTaskIds.includes(task.id)),
+            error:(err) =>console.log(err)
           })
           
           swalWithBootstrapButtons.fire(
@@ -180,7 +229,6 @@ export class TaskComponent implements OnInit {
         }
       })
 
-
     } else {
 
       const swalWithBootstrapButtons = Swal.mixin({
@@ -188,17 +236,9 @@ export class TaskComponent implements OnInit {
       })
 
       swalWithBootstrapButtons.fire({
-        // title: 'Are you sure to delete?',
         title: "There are not tasks to delete",
         icon: 'warning',
       })
-
-
     }
-
-
-
-
-
   }
 }

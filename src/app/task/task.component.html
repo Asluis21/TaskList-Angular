@@ -15,10 +15,11 @@
                 </div>
 
                 <ul class="list-group my-4 list-tasks" #taskList>
-                    <div *ngIf="tasks.length > 0">
+                    <!-- <div *ngIf="tasks.length > 0"> -->
+                    <div>
                         <li class="list-group-item list-tasks-header d-flex justify-content-between">
                             <div class="list-header-title">
-                                <h5>All Task</h5>
+                                <h5>{{tittle}}</h5>
                             </div>
 
                             <div class="dropdown">
@@ -46,7 +47,7 @@
                                 </ul>
                             </div>
 
-
+                            
                             <!-- Modal view -->
                             <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="optionsModal"
                                 aria-hidden="true">
@@ -56,17 +57,17 @@
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5 text-center">Selected date</h1>
                                             <button type="button" class="btn-close m-0" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                            aria-label="Close"></button>
                                         </div>
                                         <!-- Modal View body-->
                                         <div class="modal-body">
-                                            <form (submit)="onSubmit()" class="form-group">
+                                            <form (submit)="filterByDate()" class="form-group">
                                                 <div class="row">
                                                     <div class="col">
                                                         <div class="row mb-3">
                                                             <div class="col-12">
                                                                 <input type="datetime-local" class="form-control"
-                                                                    name="date" id="datetimeFilter"
+                                                                    name="datetimeFilter" id="datetimeFilter"
                                                                     [(ngModel)]="selectedDate">
                                                             </div>
                                                         </div>
@@ -101,9 +102,13 @@
                                         <span class="text-muted">{{ task . name }}</span>
                                     </label>
                                 </div>
-
-                                <a [routerLink]="['/task/ver', task.id]">More Details</a>
-                                <!-- <button (click)="deleteTask(task.id)">Eliminar</button> -->
+                                
+                                <div class="d-flex gap-5 align-items-center">
+                                    <li [ngStyle]="{'color': getPriorityColor(task.priorityId)}">{{task.priority.name}}</li>
+    
+                                    <a [routerLink]="['/task/ver', task.id]">More Details</a>
+                                    <!-- <button (click)="deleteTask(task.id)">Eliminar</button> -->
+                                </div>
                             </div>
                         </li>
                     </div>

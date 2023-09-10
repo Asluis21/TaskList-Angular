@@ -10,6 +10,7 @@ import { TaskFormComponent } from './task-form/task-form.component';
 import { NavigationMenuComponent } from './navigation-menu/navigation-menu.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     TaskComponent,
     TaskFormComponent,
     NavigationMenuComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

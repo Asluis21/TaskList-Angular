@@ -11,10 +11,7 @@ export class DataSharingService {
 
   setInputValue(value:string){
     console.log("value : " + value);
-    
     this.inputValueSubject.next(value);
-    console.log(this.inputValue$);
-    
   }
 
   constructor() { }

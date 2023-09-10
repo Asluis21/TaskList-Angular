@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../task/task.service';
 import { Task } from '../task/task';
-import { parse, format } from 'date-fns';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 import flatpickr from 'flatpickr';
 import Swal from 'sweetalert2';
 import { Priority } from '../task/priority';
@@ -14,57 +11,47 @@ import { Priority } from '../task/priority';
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.css']
 })
-export class TaskFormComponent implements OnInit {
+export class TaskFormComponent implements OnInit, OnDestroy {
 
-  public editMode: boolean;
   public priorities: Priority[] = [];
-  private id: number=0;
   public task: Task = new Task();
   public errors: Map<string, string> = new Map<string, string>();
+  public flatpickrIntance : flatpickr.Instance;
 
   constructor(private routerActive : ActivatedRoute, private router : Router, private taskService : TaskService){    
   }
-
-  ngAfterViewInit(){
-    flatpickr('#dueDate',{
-      enableTime:true,
-      dateFormat: 'Y-m-d H:i'
-    })
-  };
   
   ngOnInit():void{
-    this.editMode = this.routerActive.snapshot.data['editMode'];
-    
+    this.initFlatpickr();
+
     this.taskService.findAllPriorities().subscribe((res) => this.priorities = res);
 
     this.routerActive.paramMap.subscribe(
-      (param) => this.id = parseInt(param.get('id')) || 0 as number
+      (param) => this.task.id = parseInt(param.get('id')) || 0 as number
     )
 
-    if(this.id != 0) {//if(this.editMode) {
+    if(this.task.id > 0) {
       this.FillFields();
     }else{
       this.task.dueDate = Task.getFormatDateTime(new Date());
     }
+  }
 
-    console.log(this.id);
+  ngOnDestroy(): void {
+    this.destroyFlatpickr();
   }
 
 
   FillFields():void{
-    this.taskService.findTaskById(this.id).subscribe(
+    this.taskService.findTaskById(this.task.id).subscribe(
       (taskFound) => {
-        taskFound.priority = null;
         this.task = taskFound;
         console.log(this.task);
-        
       }
     );
   }
   
   public onTaskSubmit():void{
-
-    // this.task.dueDate = Task.getFormatDateTime(new Date(this.task.dueDate));
 
     console.log(this.task.dueDate);
 
@@ -72,9 +59,9 @@ export class TaskFormComponent implements OnInit {
       buttonsStyling: false
     })
 
-    if(this.id != 0){
+    if(this.task.id != 0){
 
-      this.taskService.editTask(this.id, this.task).subscribe({
+      this.taskService.editTask(this.task.id, this.task).subscribe({
 
         next: () => {
           this.errors = new Map<string, string>
@@ -113,5 +100,20 @@ export class TaskFormComponent implements OnInit {
     
   }
 
+  private initFlatpickr(){
+    const datetimeFilter  = document.getElementById('dueDate') as HTMLInputElement;
 
+    if (datetimeFilter ){
+       this.flatpickrIntance = flatpickr(datetimeFilter, {
+        enableTime:true,
+        dateFormat: 'Y-m-d H:i'
+       });
+    }
+  }
+
+  private destroyFlatpickr(){
+    if(this.destroyFlatpickr){
+      this.flatpickrIntance.destroy();
+    }
+  }
 }

@@ -16,12 +16,15 @@
     --border-light: #dee2e6;
 }
 
-html, body {
-    height: 100%;
-     
+
+html, body { height: 100%; } 
+
+.swal2-shown body.swal2-height-auto {
+    height: 100% !important; /* O ajusta la altura según sea necesario */
 }
-html, body { height: 100%; }
+
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
 
 /* BUTTONS */
 
