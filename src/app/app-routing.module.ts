@@ -11,9 +11,9 @@ const routes: Routes = [
   {path:'overdue/:page', component: TaskComponent, data : {state:"overdue"}},
   {path:'pending/:page', component: TaskComponent, data : {state:"pending"}},
   {path:'complete/:page', component: TaskComponent, data : {state:"complete"}},
-  {path:'create', component: TaskFormComponent, data : {editMode : false}},
-  {path:'task/ver/:id', component: TaskFormComponent, data : {editMode : true}},
-  { path: '**', component: PageNotFoundComponent }
+  {path:'create', component: TaskFormComponent, data : {showOnlyBarTitle : true}},
+  {path:'task/ver/:id', component: TaskFormComponent, data : {showOnlyBarTitle : true}},
+  { path: '**', component: PageNotFoundComponent, data : {showOnlyBarTitle : true}}
 ];
 
 @NgModule({

@@ -29,3 +29,21 @@
     transition: .3s all ease;
 }
 
+.btn-complete{
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+.btn-complete:checked{
+    background-color: var(--border);
+    border-color: var(--border);
+}
+
+.btn-delete{
+    display: flex;
+    padding: 9px;
+    background: var(--red);
+    border: var(--red);
+    border-radius: 55%;
+}

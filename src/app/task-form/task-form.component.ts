@@ -116,4 +116,39 @@ export class TaskFormComponent implements OnInit, OnDestroy {
       this.flatpickrIntance.destroy();
     }
   }
+
+  public deleteTask(){
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure to delete?',
+      text: "You won't be able to revert this!",
+      icon: 'question',
+      showCancelButton: true,
+      cancelButtonText: 'No, cancel!',
+      confirmButtonText: 'Yes, delete them!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        
+        this.taskService.deleteTaskById(this.task.id).subscribe({
+          next:()=>console.log("task " + this.task.id + " deleted"),
+          error:(err)=>console.log(err)
+        })
+        
+        swalWithBootstrapButtons.fire(
+          'Deleted!',
+          'The task have been deleted.',
+          'success'
+        )
+
+        this.router.navigate(['/task']);
+      }
+    })
+    
+
+  }
 }

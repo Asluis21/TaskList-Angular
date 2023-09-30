@@ -9,6 +9,7 @@ import flatpickr from 'flatpickr';
 import Swal from 'sweetalert2';
 import { DataSharingService } from './data-sharing.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { TasksJson } from './tasks-json';
 
 @Component({
   selector: 'app-task',
@@ -29,9 +30,9 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public selectedState: string;
   public tasksPerPage: number;
-  inputValue: string;
+  inputValue: string = null;
   errorMessage: string = '';
-  tittle = 'All tasks'
+  tittle = '';
   firstLoad = true;
   private flatpickrInstance: flatpickr.Instance;
 
@@ -40,65 +41,60 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('taskList', {static:true}) taskList!: ElementRef<HTMLUListElement>;
 
   ngOnInit(): void {
-    this.initFlatpickr();
+    console.log("ngOnInit()");
+    
     this.selectedDate = Task.getFormatDateTime(new Date());
     
     this.subscriptions.push(
-      this.route.paramMap.subscribe((params) => {
-        if (!this.firstLoad) {
-          console.log("TIPO DE CARGAR: loadPageData por parametro page");
-          this.state = this.route.snapshot.data['state'];
-          this.currentPage = parseInt(params.get('page')) || 0
-          this.loadPageData();
-          this.tittle = 'Tasks ' + this.state.charAt(0).toUpperCase() + this.state.slice(1);
-
-        }
-      })
-    );
-
-    // this.route.paramMap.subscribe((params) => {
-    //     if(! this.firstLoad){
-    //       console.log("TIPO DE CARGAR: loadPageData por parametro page");
-    //       this.state = this.route.snapshot.data['state'];
-    //       this.currentPage = parseInt(params.get('page')) || 0
-    //       this.loadPageData();
-    //     }
-    //   });
-
-    this.firstLoad = false;
-    
-    // if(!this.firstLoad){
-    //   this.dataSharingService.inputValue$.subscribe(value => {
-    //     console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra");
-    //       this.inputValue = value;
-    //       console.log('this.inputValue: ' + this.inputValue);
-
-          
-    //       this.state = this.route.snapshot.data['state'];
-    //       this.currentPage = 0
-          
-    //       this.loadPageData();
-    //   })
-    // }
-
-    this.subscriptions.push(
       this.dataSharingService.inputValue$
-        .pipe(debounceTime(300), distinctUntilChanged())
         .subscribe((value) => {
-          console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra");
-          this.inputValue = value;
+
+          this.initFlatpickr();
+          console.log("inputValue: " + this.inputValue + ", value desde el service:" + value);
           console.log('this.inputValue: ' + this.inputValue);
+          console.log('Value: ' + value);
 
           
           this.state = this.route.snapshot.data['state'];
-          this.currentPage = 0
-          this.tittle = 'Tasks ' + this.state.charAt(0).toUpperCase() + this.state.slice(1);
           
+          console.log("this.inputValue != value: " + (this.inputValue != value));
+        
+          if(this.inputValue != value && this.inputValue != null){
+            this.currentPage = 0
+          }else{
+            this.route.paramMap.subscribe((params) => {
+              this.currentPage = parseInt(params.get('page'));
+              console.log(this.currentPage);
+              console.log(this.inputValue);
+  
+              if(this.inputValue != null){
+                this.loadPageData();
+              }
+            })
+          }
+          
+          this.inputValue = value;
           this.loadPageData();
-        })
-    );
+      })
 
-    console.log('ROUTER SNAPSHOT:' + this.state);
+
+      //     this.route.paramMap.subscribe((params) => {
+            
+      //         this.initFlatpickr();
+      //         console.log("TIPO DE CARGAR: loadPageData por parametro page");
+              
+              
+      //         this.currentPage = parseInt(params.get('page')) || 0
+
+              
+
+      //         this.state = this.route.snapshot.data['state'];
+      //         console.log("this.state: " + this.state);
+      //         console.log('this.inputValue: ' + this.inputValue);
+
+      //         this.loadPageData();
+      // })
+    );
   }
 
   ngOnDestroy(): void {
@@ -124,8 +120,34 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(){
-    
+    console.log("ngAfterViewInit()");
+
+    // this.subscriptions.push(
+    //   this.dataSharingService.inputValue$
+    //     // .pipe(debounceTime(300), distinctUntilChanged())
+    //     .subscribe((value) => {
+    //       if(!this.firstLoad){
+    //         console.log(this.firstLoad);
+            
+    //         this.initFlatpickr();
+    //         console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra 2");
+    //         this.inputValue = value;
+    //         console.log('this.inputValue: ' + this.inputValue);
+  
+    //         this.state = this.route.snapshot.data['state'];
+    //         this.currentPage = 0
+            
+    //         this.loadPageData();
+    //       }
+    //   })
+    // );
+
+    // this.firstLoad = false;
   }
+
+  public isEmptyOrSpaces(str : string) : boolean{
+    return str === null || str.match(/^ *$/) !== null;
+}
 
   filterByDate() : void{
     this.currentPage = 0;
@@ -133,22 +155,45 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadPageData();
   }
 
+  // public searchByBar(){
+  //   this.subscriptions.push(
+  //     this.dataSharingService.inputValue$
+  //       // .pipe(debounceTime(300), distinctUntilChanged())
+  //       .subscribe((value) => {
+
+  //         this.initFlatpickr();
+  //         console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra");
+  //         this.inputValue = value;
+  //         console.log('this.inputValue: ' + this.inputValue);
+
+          
+  //         this.state = this.route.snapshot.data['state'];
+  //         this.currentPage = 0
+  //         // this.tittle = 'Tasks ' + this.state.charAt(0).toUpperCase() + this.state.slice(1);
+          
+  //         this.loadPageData();
+  //     })
+  //   );
+  // }
+  
+
   private loadPageData(): void {
         
-      let tasksFound : Observable<TaskResponse>;
+      let tasksFound : Observable<TasksJson>;
       console.log('STATE: ' + this.state);
+      console.log('this.selectedDate: ' + this.selectedDate);
       
       switch (this.state) {
         case this.STATE_OVERDUE:
-          tasksFound = this.taskService.overdueTasksPageable(this.selectedDate, this.currentPage);
+          tasksFound = this.taskService.overdueTasksPageable(this.selectedDate, this.currentPage, this.inputValue);
           break;
   
         case this.STATE_PENDING:
-          tasksFound = this.taskService.pendingTasksPageable(this.selectedDate, this.currentPage);
+          tasksFound = this.taskService.pendingTasksPageable(this.selectedDate, this.currentPage, this.inputValue);
           break;
 
           case this.STATE_COMPLETE:
-          tasksFound = this.taskService.completeTasksPageable(this.currentPage);
+          tasksFound = this.taskService.completeTasksPageable(this.currentPage, this.inputValue);
           break;
 
         default:
@@ -159,16 +204,23 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
       tasksFound.subscribe({
         next: (tasks) => {
           console.log(tasks);
-          
-          this.tasks = this.pagination.updatePageData(tasks);
+          this.tittle = tasks.title;
+          this.tasks = this.pagination.updatePageData(tasks.tasks);
           this.pagesRanges = this.pagination.pagesRanges;
+          console.log("CURRENT PAGE: " + this.currentPage);
+          
+          // this.inputValue = '';
+          this.errorMessage = '';
         },
 
         error: (err) => {
+          this.tasks = [];
           console.log(err);
-          this.errorMessage = err
+
+          this.tittle = err.title;
+          this.errorMessage = err.message
         }
-      });
+      });      
   }
 
   getPriorityColor(idPriority : number):string{

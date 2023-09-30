@@ -8,6 +8,7 @@
     --red:#B33030;
     --yellow: #E6B325;
     --green: #789395;
+    --hover: #f8f9fa;
 }
  
 h1, h2, h3, h4, h5, h6{
@@ -77,15 +78,50 @@ a{
 .error-message{
     padding: 15px 10px;
     margin: 20px;
-    background: var(--green-light);
+    /* background: var(--green-light); */
     color: var(--muted);
-
+    position: relative;
 }
 
+.message-doc{
+    width: 250px;
+    height: 250px;
+    transform: rotate(13deg);
+    margin: 30px 0;
+}
+
+.message-emoji-dizzi{
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* transform: translate(-50%, -93%); */
+}
+
+.dropdown-item:active{
+    background-color: var(--border);
+}
+
+*{
+    border-radius: 0;
+}
+
+.modal-content .modal-body input[type ="submit"]:hover {
+    background: var(--hover);
+}
+
+.modal-content{
+    border: none;
+}
 
 p {
     margin: 0;
 }
+
+
+
 
 /* MEDIA QUERIES */
 

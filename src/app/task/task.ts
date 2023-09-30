@@ -7,6 +7,7 @@ export class Task {
     public name: string;
     public description: string;
     public priorityId: number;
+    public completed: boolean;
     public priority:Priority;
     public dueDate: Date | string;
     

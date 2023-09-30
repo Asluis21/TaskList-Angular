@@ -8,14 +8,10 @@
 
         <div class="col-12 col-lg-10">
             <div class="container">
-                <h3>{{ inputValue }}</h3>
-
-                <div *ngIf="tasks.length == 0" class="text-center error-message" role="alert">
-                    <h3>{{ errorMessage }}</h3>
-                </div>
-
-                <ul class="list-group my-4 list-tasks" #taskList>
-                    <!-- <div *ngIf="tasks.length > 0"> -->
+                
+                <ul [hidden]="(tasks.length == 0) && (state == 'task' || state == 'complete') " class="list-group my-4 list-tasks" #taskList>
+                <!-- <ul [hidden]="! (tasks.length > 0 && (! firstLoad))" class="list-group my-4 list-tasks" #taskList> -->
+                    <!-- <div *ngIf="tasks.length > 0" [hidden]="! (tasks.length > 0)"> -->
                     <div>
                         <li class="list-group-item list-tasks-header d-flex justify-content-between">
                             <div class="list-header-title">
@@ -37,7 +33,7 @@
                                             (click)="deleteSelectedTasks()">Delete selected tasks</button></li>
 
                                     <!-- Modal view -->
-                                    <li>
+                                    <li [hidden]="state == 'task' || state == 'complete' ">
                                         <a class="dropdown-item" href="#" type="button" data-bs-toggle="modal"
                                             data-bs-target="#optionsModal">
                                             Filter by date
@@ -114,7 +110,21 @@
                     </div>
                 </ul>
 
-                <nav aria-label="page navigation">
+                <div [hidden]="(errorMessage === '')" class="text-center error-message" role="alert">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark message-doc" viewBox="0 0 16 16">
+                        <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+                    </svg>
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="5" height="5" x="36%" y="38%" fill="currentColor" class="bi bi-emoji-dizzy message-emoji-dizzi" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M9.146 5.146a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 1 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 0-.708zm-5 0a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 1 1 .708.708l-.647.646.647.646a.5.5 0 1 1-.708.708L5.5 7.207l-.646.647a.5.5 0 1 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 0-.708zM10 11a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                    </svg>
+                    
+                    <h3>{{ errorMessage }}</h3>
+                </div>
+
+                <nav aria-label="page navigation" [hidden]="! (tasks.length > 0)">
                     <ul class="pagination justify-content-end m-1">
                         <li class="page-item" *ngFor="let page of pagesRanges">
                             <a class="page-link" *ngIf="currentPage != page" [routerLink]="['/' + state + '/', page]"

@@ -24,45 +24,57 @@ export class TaskService {
     );
   }
 
-  listTasksPageable(page:number, keyword:string):Observable<TaskResponse>{
+  listTasksPageable(page:number, keyword:string):Observable<TasksJson>{
     let params = new HttpParams().set('page', page.toString());
     
     if(keyword != null) {
       params = params.set('keyword', keyword);
     }
-
+    console.log("param: " +  params);
     return this.http.get<TasksJson>(this.url + '/tasksPageable', {params}).pipe(
-      map(res => res.tasks)
-    );
-  }
-
-  overdueTasksPageable(date:string, page:number):Observable<TaskResponse>{
-    let params = new HttpParams().set('page', page);
-    params = params.set('date', date);
-    
-
-    return this.http.get<TasksJson>(this.url+'/overdueTasksPageable', {params}).pipe(
-      map((res) => res.tasks)
-    );
-  }
-
-  pendingTasksPageable(date:string, page:number):Observable<TaskResponse>{
-    let params = new HttpParams().set('page', page);
-    params = params.set('date', date);
-
-    return this.http.get(this.url + '/pendingTasksPageable', {params}).pipe(
-      map((res:any) => res.tasks),
+      // map(res => res.tasks),
       catchError((error) => {
-        return throwError(() => error.error.message);
+        return throwError(() => error.error);
       })
     );
   }
 
-  completeTasksPageable(page:number): Observable<TaskResponse>{
+  overdueTasksPageable(date:string, page:number, keyword:string):Observable<TasksJson>{
     let params = new HttpParams().set('page', page);
+    params = params.set('date', date);
+    params = params.set('keyword', keyword);
+    
+    return this.http.get<TasksJson>(this.url+'/overdueTasksPageable', {params}).pipe(
+      // map((res) => res.tasks),
+      catchError((error) => {
+        return throwError(() => error.error);
+      })
+    );
+  }
+
+  pendingTasksPageable(date:string, page:number, keyword:string):Observable<TasksJson>{
+    let params = new HttpParams().set('page', page);
+    params = params.set('date', date);
+    params = params.set('keyword', keyword);
+
+    return this.http.get<TasksJson>(this.url + '/pendingTasksPageable', {params}).pipe(
+      // map((res:any) => res.tasks),
+      catchError((error) => {
+        return throwError(() => error.error);
+      })
+    );
+  }
+
+  completeTasksPageable(page:number, keyword:string): Observable<TasksJson>{
+    let params = new HttpParams().set('page', page);
+    params = params.set('keyword', keyword);
+    console.log("param: " +  params);
     
     return this.http.get<TasksJson>(this.url + '/completeTasksPageable', {params}).pipe(
-      map((res) => res.tasks)
+      // map((res) => res.tasks),
+      catchError((error) => {
+        return throwError(() => error.error);
+      })
     );
   }
 

@@ -9,13 +9,18 @@ import { DataSharingService } from '../task/data-sharing.service';
 })
 export class SearchBarComponent implements OnInit{
 
-  editModeExist: boolean = false;
+  showOnlyBarTitle: boolean = false;
   inputValue : string = '';
 
   constructor(private activeRouter: ActivatedRoute, private dataSharingService:DataSharingService){ }
 
   ngOnInit(){
-    this.editModeExist = !('editMode' in this.activeRouter.snapshot.data);
+    this.showOnlyBarTitle = this.activeRouter.snapshot.data['state'] || false; // !('showOnlyBarTitle' in this.activeRouter.snapshot.data);
+    
+    this.dataSharingService.inputValue$.subscribe(data => {
+      this.inputValue = data;
+    });
+    
   }
 
   onInputChange(){
