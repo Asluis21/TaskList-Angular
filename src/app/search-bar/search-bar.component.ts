@@ -15,7 +15,7 @@ export class SearchBarComponent implements OnInit{
   constructor(private activeRouter: ActivatedRoute, private dataSharingService:DataSharingService){ }
 
   ngOnInit(){
-    this.showOnlyBarTitle = this.activeRouter.snapshot.data['state'] || false; // !('showOnlyBarTitle' in this.activeRouter.snapshot.data);
+    this.showOnlyBarTitle = !(this.activeRouter.snapshot.data['showOnlyBarTitle']); // !('showOnlyBarTitle' in this.activeRouter.snapshot.data);
     
     this.dataSharingService.inputValue$.subscribe(data => {
       this.inputValue = data;

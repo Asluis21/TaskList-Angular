@@ -1,14 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit} from '@angular/core';
 import { Task } from './task';
 import { TaskService } from './task.service';
-import { TaskResponse } from './task-response';
 import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Pagination } from '../utils/pagination';
 import flatpickr from 'flatpickr';
 import Swal from 'sweetalert2';
 import { DataSharingService } from './data-sharing.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TasksJson } from './tasks-json';
 
 @Component({
@@ -20,6 +18,7 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly STATE_OVERDUE = 'overdue';
   private readonly STATE_PENDING = 'pending';
   private readonly STATE_COMPLETE = 'complete';
+  private readonly STATE_TASK = 'task';
 
   public tasks: Task[] = [];
   public currentPage: number = 0;
@@ -29,71 +28,37 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscriptions: Subscription[] = [];
 
   public selectedState: string;
-  public tasksPerPage: number;
   inputValue: string = null;
   errorMessage: string = '';
   tittle = '';
-  firstLoad = true;
   private flatpickrInstance: flatpickr.Instance;
 
-  constructor(private taskService: TaskService, private pagination: Pagination, private route : ActivatedRoute, private dataSharingService:DataSharingService){ }
+  constructor(private taskService: TaskService, private pagination: Pagination, private activatedRoute : ActivatedRoute, private router : Router, private dataSharingService:DataSharingService){ }
   
   @ViewChild('taskList', {static:true}) taskList!: ElementRef<HTMLUListElement>;
 
   ngOnInit(): void {
-    console.log("ngOnInit()");
     
     this.selectedDate = Task.getFormatDateTime(new Date());
     
     this.subscriptions.push(
-      this.dataSharingService.inputValue$
-        .subscribe((value) => {
+      this.activatedRoute.paramMap.subscribe((params) => {
 
-          this.initFlatpickr();
-          console.log("inputValue: " + this.inputValue + ", value desde el service:" + value);
-          console.log('this.inputValue: ' + this.inputValue);
-          console.log('Value: ' + value);
+        this.currentPage = parseInt(params.get('page'));
+        this.state = params.get('state');
 
-          
-          this.state = this.route.snapshot.data['state'];
-          
-          console.log("this.inputValue != value: " + (this.inputValue != value));
-        
-          if(this.inputValue != value && this.inputValue != null){
+        if(this.inputValue != null){
+          this.fillTasks();
+        }
+      })  
+    );
+
+    this.subscriptions.push(
+      this.dataSharingService.inputValue$.subscribe((value) => {
             this.currentPage = 0
-          }else{
-            this.route.paramMap.subscribe((params) => {
-              this.currentPage = parseInt(params.get('page'));
-              console.log(this.currentPage);
-              console.log(this.inputValue);
-  
-              if(this.inputValue != null){
-                this.loadPageData();
-              }
-            })
-          }
-          
-          this.inputValue = value;
-          this.loadPageData();
+            this.inputValue = value;
+            this.fillTasks();
       })
-
-
-      //     this.route.paramMap.subscribe((params) => {
-            
-      //         this.initFlatpickr();
-      //         console.log("TIPO DE CARGAR: loadPageData por parametro page");
-              
-              
-      //         this.currentPage = parseInt(params.get('page')) || 0
-
-              
-
-      //         this.state = this.route.snapshot.data['state'];
-      //         console.log("this.state: " + this.state);
-      //         console.log('this.inputValue: ' + this.inputValue);
-
-      //         this.loadPageData();
-      // })
     );
   }
 
@@ -104,7 +69,7 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private initFlatpickr(): void {
     const datetimeFilter = document.getElementById('datetimeFilter') as HTMLInputElement;
-
+    
     if (datetimeFilter) {
       this.flatpickrInstance = flatpickr(datetimeFilter, {
         enableTime: true,
@@ -120,107 +85,52 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(){
-    console.log("ngAfterViewInit()");
-
-    // this.subscriptions.push(
-    //   this.dataSharingService.inputValue$
-    //     // .pipe(debounceTime(300), distinctUntilChanged())
-    //     .subscribe((value) => {
-    //       if(!this.firstLoad){
-    //         console.log(this.firstLoad);
-            
-    //         this.initFlatpickr();
-    //         console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra 2");
-    //         this.inputValue = value;
-    //         console.log('this.inputValue: ' + this.inputValue);
-  
-    //         this.state = this.route.snapshot.data['state'];
-    //         this.currentPage = 0
-            
-    //         this.loadPageData();
-    //       }
-    //   })
-    // );
-
-    // this.firstLoad = false;
+    this.initFlatpickr();
   }
-
-  public isEmptyOrSpaces(str : string) : boolean{
-    return str === null || str.match(/^ *$/) !== null;
-}
 
   filterByDate() : void{
     this.currentPage = 0;
     this.selectedDate = Task.getFormatDateTime(new Date(this.selectedDate));
-    this.loadPageData();
+    this.fillTasks();
   }
 
-  // public searchByBar(){
-  //   this.subscriptions.push(
-  //     this.dataSharingService.inputValue$
-  //       // .pipe(debounceTime(300), distinctUntilChanged())
-  //       .subscribe((value) => {
+  private getDataFromState(): Observable<TasksJson> {
 
-  //         this.initFlatpickr();
-  //         console.log("TIPO DE CARGAR: loadPageData por busqueda en la barra");
-  //         this.inputValue = value;
-  //         console.log('this.inputValue: ' + this.inputValue);
-
-          
-  //         this.state = this.route.snapshot.data['state'];
-  //         this.currentPage = 0
-  //         // this.tittle = 'Tasks ' + this.state.charAt(0).toUpperCase() + this.state.slice(1);
-          
-  //         this.loadPageData();
-  //     })
-  //   );
-  // }
-  
-
-  private loadPageData(): void {
-        
-      let tasksFound : Observable<TasksJson>;
-      console.log('STATE: ' + this.state);
-      console.log('this.selectedDate: ' + this.selectedDate);
-      
       switch (this.state) {
         case this.STATE_OVERDUE:
-          tasksFound = this.taskService.overdueTasksPageable(this.selectedDate, this.currentPage, this.inputValue);
-          break;
-  
+            return this.taskService.overdueTasksPageable(this.selectedDate, this.currentPage, this.inputValue);
         case this.STATE_PENDING:
-          tasksFound = this.taskService.pendingTasksPageable(this.selectedDate, this.currentPage, this.inputValue);
-          break;
-
+            return this.taskService.pendingTasksPageable(this.selectedDate, this.currentPage, this.inputValue);
           case this.STATE_COMPLETE:
-          tasksFound = this.taskService.completeTasksPageable(this.currentPage, this.inputValue);
-          break;
-
+            return this.taskService.completeTasksPageable(this.currentPage, this.inputValue);
+          case this.STATE_TASK:
+            return this.taskService.listTasksPageable(this.currentPage, this.inputValue);
         default:
-          tasksFound = this.taskService.listTasksPageable(this.currentPage, this.inputValue);
-          break;
+          this.router.navigate(["**"]);
+          return undefined;
       }
+  }
 
-      tasksFound.subscribe({
+  private fillTasks(){
+
+    if(this.getDataFromState() != undefined){
+
+      this.getDataFromState().subscribe({
         next: (tasks) => {
           console.log(tasks);
           this.tittle = tasks.title;
           this.tasks = this.pagination.updatePageData(tasks.tasks);
           this.pagesRanges = this.pagination.pagesRanges;
-          console.log("CURRENT PAGE: " + this.currentPage);
-          
-          // this.inputValue = '';
           this.errorMessage = '';
         },
-
+  
         error: (err) => {
           this.tasks = [];
-          console.log(err);
-
           this.tittle = err.title;
           this.errorMessage = err.message
         }
-      });      
+      }); 
+    }
   }
 
   getPriorityColor(idPriority : number):string{
@@ -233,7 +143,7 @@ export class TaskComponent implements OnInit, OnDestroy, AfterViewInit {
         return 'var(--yellow)'
 
       case 3:
-        return 'var(--green)'
+        return 'var(--green-light)'
       
       default:
         return 'var(--muted)'

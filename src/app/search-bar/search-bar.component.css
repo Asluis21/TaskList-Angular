@@ -1,17 +1,11 @@
 :host {
-    --border:#7D9D9C;
-    --border-link:#789395;
-    --principal:#E5E3C9;
-    --red:#B33030;
-    --dark-blue:#19282F;
-    --muted:rgba(33, 37, 41, 0.75);
-    --shadown: rgba(0, 0, 0, .135);
-    --border-light: #dee2e6;
+    --gray:rgba(33, 37, 41, 0.75);
+    --shadown-black: rgba(0, 0, 0, .135);
 }
 
 .navbar-logo-title{
     font-size: 27px;
-    color: var(--muted);
+    color: var(--gray);
     text-transform: uppercase;
 }
 
@@ -24,7 +18,7 @@
 
 .navbar-logo{
     text-align: center;
-    box-shadow: 0 -1.3rem 3rem var(--shadown);
+    box-shadow: 0 -1.3rem 3rem var(--shadown-black);
     /* padding: 20px; */
 }
 
@@ -42,7 +36,7 @@
     border-radius: 0%;
     font-size: 19px;
     padding: 20px 73px;
-    box-shadow: 0 1rem 3rem var(--shadown);
+    box-shadow: 0 1rem 3rem var(--shadown-black);
 }
 
 .navbar-search .navbar-collapse svg {

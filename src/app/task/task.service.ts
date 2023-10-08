@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient,  HttpHeaders,  HttpParams } from '@angular/common/http';
-import { of, Observable, EMPTY, throwError } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, EMPTY, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Task } from './task';
-import { NavigationExtras, Router } from '@angular/router';
-import { TaskResponse } from './task-response';
+import { Router } from '@angular/router';
 import { TasksJson } from './tasks-json';
 import { catchError } from 'rxjs/operators';
 import { Priority } from './priority';
@@ -26,13 +25,9 @@ export class TaskService {
 
   listTasksPageable(page:number, keyword:string):Observable<TasksJson>{
     let params = new HttpParams().set('page', page.toString());
+    params = params.set('keyword', keyword);
     
-    if(keyword != null) {
-      params = params.set('keyword', keyword);
-    }
-    console.log("param: " +  params);
     return this.http.get<TasksJson>(this.url + '/tasksPageable', {params}).pipe(
-      // map(res => res.tasks),
       catchError((error) => {
         return throwError(() => error.error);
       })
@@ -45,7 +40,6 @@ export class TaskService {
     params = params.set('keyword', keyword);
     
     return this.http.get<TasksJson>(this.url+'/overdueTasksPageable', {params}).pipe(
-      // map((res) => res.tasks),
       catchError((error) => {
         return throwError(() => error.error);
       })
@@ -58,7 +52,6 @@ export class TaskService {
     params = params.set('keyword', keyword);
 
     return this.http.get<TasksJson>(this.url + '/pendingTasksPageable', {params}).pipe(
-      // map((res:any) => res.tasks),
       catchError((error) => {
         return throwError(() => error.error);
       })
@@ -71,7 +64,6 @@ export class TaskService {
     console.log("param: " +  params);
     
     return this.http.get<TasksJson>(this.url + '/completeTasksPageable', {params}).pipe(
-      // map((res) => res.tasks),
       catchError((error) => {
         return throwError(() => error.error);
       })

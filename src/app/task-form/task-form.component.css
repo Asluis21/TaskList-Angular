@@ -1,12 +1,7 @@
 :host {
-    --border:#7D9D9C;
-    --border-link:#789395;
-    --principal:#E5E3C9;
+    --green-light:#789395;
     --red:#B33030;
-    --dark-blue:#19282F;
-    --muted:rgba(33, 37, 41, 0.75);
-    --shadown: rgba(0, 0, 0, .175);
-    --border-light: #dee2e6;
+    --gray:rgba(33, 37, 41, 0.75);
 }
 
 .form-control{
@@ -14,18 +9,18 @@
 }
 
 .form-label{
-    color: var(--muted);
+    color: var(--gray);
 }
 
 .btn-enviar{
-    color: var(--border-link);
+    color: var(--green-light);
     background-color: white;
-    border: 1px solid var(--border-link);
+    border: 1px solid var(--green-light);
 }
 
 .btn-enviar:hover{
     color: white;
-    background-color: var(--border-link);
+    background-color: var(--green-light);
     transition: .3s all ease;
 }
 
@@ -36,8 +31,8 @@
 }
 
 .btn-complete:checked{
-    background-color: var(--border);
-    border-color: var(--border);
+    background-color: var(--green-light);
+    border-color: var(--green-light);
 }
 
 .btn-delete{

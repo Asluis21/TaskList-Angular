@@ -5,12 +5,12 @@ import { TaskFormComponent } from './task-form/task-form.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
-  {path:'', redirectTo: '/task', pathMatch:'full'},
-  {path:'task', component: TaskComponent, data : {state:"task"}},
-  {path:'task/:page', component: TaskComponent, data : {state:"task"}},
-  {path:'overdue/:page', component: TaskComponent, data : {state:"overdue"}},
-  {path:'pending/:page', component: TaskComponent, data : {state:"pending"}},
-  {path:'complete/:page', component: TaskComponent, data : {state:"complete"}},
+  {path:'', redirectTo: '/task/0', pathMatch:'full'},
+  // {path:':state', component: TaskComponent},
+  {path:':state/:page', component: TaskComponent},
+  // {path:'overdue/:page', component: TaskComponent, data : {state:"overdue"}},
+  // {path:'pending/:page', component: TaskComponent, data : {state:"pending"}},
+  // {path:'complete/:page', component: TaskComponent, data : {state:"complete"}},
   {path:'create', component: TaskFormComponent, data : {showOnlyBarTitle : true}},
   {path:'task/ver/:id', component: TaskFormComponent, data : {showOnlyBarTitle : true}},
   { path: '**', component: PageNotFoundComponent, data : {showOnlyBarTitle : true}}

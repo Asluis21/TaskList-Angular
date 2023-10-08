@@ -1,17 +1,12 @@
 :host {
-    --border:#7D9D9C;
-    --border-link:#789395;
-    --principal:#E5E3C9;
-    --red:#B33030;
-    --dark-blue:#19282F;
-    --muted:rgba(33, 37, 41, 0.75);
-    --shadown: rgba(0, 0, 0, .175);
-    --border-light: #dee2e6;
+    --green-light:#789395;
+    --gray:rgba(33, 37, 41, 0.75);
+    --shadown-black: rgba(0, 0, 0, .175);
 }
 
 .nav-task{
     min-height: 100%;
-    box-shadow: 0 1rem 3rem var(--shadown);
+    box-shadow: 0 1rem 3rem var(--shadown-black);
     /* min-width: 150px;
     max-width: 280px; */
 }
@@ -23,12 +18,12 @@
     padding: 20px;
     min-width: 134px;
     gap: 10px;
-    border-bottom: 1px solid var(--border-light);
-    color: var(--muted);
+    /* border-bottom: 1px solid var(--border-light); */
+    color: var(--gray);
 }
 
 .item-content:hover{
-    background-color: var(--border-link);
+    background-color: var(--green-light);
     color: white;
 }
 

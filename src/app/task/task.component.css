@@ -1,14 +1,8 @@
 :host {
-    --border:#7D9D9C;
-    --border-link:#789395;
-    --principal:#E5E3C9;
-    --green-light:#78939536;
-    --dark-blue:#19282F;
-    --muted:rgba(33, 37, 41, 0.75);
+    --green-light:#789395;
+    --gray:rgba(33, 37, 41, 0.75);
     --red:#B33030;
     --yellow: #E6B325;
-    --green: #789395;
-    --hover: #f8f9fa;
 }
  
 h1, h2, h3, h4, h5, h6{
@@ -30,7 +24,7 @@ a{
 
 /* List header */
 .list-tasks-header{
-    border-top: 2px solid var(--border);
+    border-top: 2px solid var(--green-light);
 }
 
 .more-options{
@@ -50,27 +44,36 @@ a{
 
 .list-tasks-body a {
     border-radius: 20px;
-    border: 1px solid var(--border-link);
+    border: 1px solid var(--green-light);
     font-size: 10px;
     padding: 10px;
     color: #789395;
 }
 
 .list-tasks-body a:hover {
-    background: var(--border-link);
-    color: var(--principal);
+    background: var(--green-light);
+    color: #FFF;
     transition: .3s all ease;
+}
+
+.form-check-input[type=checkbox] {
+    border-radius: 50%;
+}
+
+.form-check-input[type=checkbox]:checked{
+    background-color: var(--green-light);
+    border-color: var(--green-light);
 }
 
 /* pagination */
 
 .pagination .page-link {
-    color: var(--muted);
+    color: var(--gray);
 }
 
 .pagination .page-item .active{
-    background: var(--border-link);
-    border: var(--border-link);
+    background: var(--green-light);
+    border: var(--green-light);
 }
 
 /* MESSAGES */
@@ -78,8 +81,7 @@ a{
 .error-message{
     padding: 15px 10px;
     margin: 20px;
-    /* background: var(--green-light); */
-    color: var(--muted);
+    color: var(--gray);
     position: relative;
 }
 
@@ -101,7 +103,7 @@ a{
 }
 
 .dropdown-item:active{
-    background-color: var(--border);
+    background-color: var(--green-light);
 }
 
 *{
@@ -109,7 +111,7 @@ a{
 }
 
 .modal-content .modal-body input[type ="submit"]:hover {
-    background: var(--hover);
+    background: #FFF;
 }
 
 .modal-content{

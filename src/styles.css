@@ -1,19 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-/* html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-} */
-
 :root {
-    --border:#7D9D9C;
-    --border-link:#789395;
-    --principal:#E5E3C9;
+    --green-light:#789395;
     --red:#B33030;
-    --dark-blue:#19282F;
-    --muted:rgba(33, 37, 41, 0.75);
-    --shadown: rgba(0, 0, 0, .175);
-    --border-light: #dee2e6;
 }
 
 
@@ -36,14 +24,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 /* .button-ok-sweatalert{ */
 .swal2-confirm {
     border-radius: 20px ;
-    border: 1px solid var(--border-link) ;
+    border: 1px solid var(--green-light) ;
     font-size: 1rem ;
-    color: var(--border-link) ;
+    color: var(--green-light) ;
     padding: 0.375rem 0.75rem;
 }
 
 .swal2-confirm:hover {
-    background: var(--border-link) ;
+    background: var(--green-light) ;
     color:#FFF;
     transition: .3s all ease ;
     padding: 0.375rem 0.75rem;
@@ -84,17 +72,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /* ===== ICON QUESTION =====*/
 .swal2-question {
-    color: var(--border-link) !important;
-    border: 2px solid var(--border-link) !important;
+    color: var(--green-light) !important;
+    border: 2px solid var(--green-light) !important;
 }
 
 /* ICON SUCCESS */
 .swal2-success-ring {
-    border: 2px solid var(--border-link) !important;
+    border: 2px solid var(--green-light) !important;
 }
 
 .swal2-success-line-tip, .swal2-success-line-long {
-    background: var(--border-link) !important;
+    background: var(--green-light) !important;
 }
 
 /* WINDOW OF ALERT */
